@@ -3,11 +3,6 @@
   "buildCommand": "DEPLOY_TARGET=vercel npm run build",
   "installCommand": "npm install",
   "outputDirectory": "dist/client",
-  "functions": {
-    "api/[...all].ts": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/api" }
   ]
