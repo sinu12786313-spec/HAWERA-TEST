@@ -1,22 +1,19 @@
-// @lovable.dev/vite-tanstack-config already includes the following — do NOT add them manually
-// or the app will break with duplicate plugins:
-//   - tanstackStart, viteReact, tailwindcss, tsConfigPaths, cloudflare (build-only),
-//     componentTagger (dev-only), VITE_* env injection, @ path alias, React/TanStack dedupe,
-//     error logger plugins, and sandbox detection (port/host/strictPort).
-// You can pass additional config via defineConfig({ vite: { ... } }) if needed.
-import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import tailwindcss from "@tailwindcss/vite";
+import tsConfigPaths from "vite-tsconfig-paths";
 
-// Deployment target is selected via the DEPLOY_TARGET env var:
-//   - unset (default) or "cloudflare" → Cloudflare Workers build (used by Lovable's own publish)
-//   - "vercel" → disables the Cloudflare plugin so the SSR build runs on Vercel's Edge runtime
-//     via the catch-all function in api/[...all].ts.
-//
-// Set DEPLOY_TARGET=vercel in Vercel → Project → Settings → Environment Variables.
 const isVercel = process.env.DEPLOY_TARGET === "vercel" || !!process.env.VERCEL;
 
 export default defineConfig({
-  cloudflare: isVercel ? false : undefined,
-  tanstackStart: {
-    server: { entry: "server" },
-  },
+  plugins: [
+    tsConfigPaths(),
+    tailwindcss(),
+    tanstackStart({
+      server: { entry: "src/server" },
+      ...(isVercel ? {} : {}),
+    }),
+    react(),
+  ],
 });
