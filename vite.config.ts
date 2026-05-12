@@ -8,7 +8,7 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 // Deployment target is selected via the DEPLOY_TARGET env var:
 //   - unset (default) or "cloudflare" → Cloudflare Workers build (used by Lovable's own publish)
-//   - "vercel" → disables the Cloudflare plugin so the SSR build runs on Vercel's Edge runtime
+//   - "vercel" → disables the Cloudflare plugin so the SSR build runs on Vercel's Node.js runtime
 //     via the catch-all function in api/[...all].ts.
 //
 // Set DEPLOY_TARGET=vercel in Vercel → Project → Settings → Environment Variables.
@@ -17,6 +17,7 @@ const isVercel = process.env.DEPLOY_TARGET === "vercel" || !!process.env.VERCEL;
 export default defineConfig({
   cloudflare: isVercel ? false : undefined,
   tanstackStart: {
+    router: { entry: "router" },
     server: { entry: "server" },
   },
 });
